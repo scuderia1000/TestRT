@@ -9,7 +9,8 @@
 </head>
 <body>
     <form>
-        Enter Your Name: <input type="text" id="userName" />
+        Enter Name: <input type="text" id="userName" />
+        <input id="myButton" type="button" value="Submit" />
     </form>
     <br>
     <br>
