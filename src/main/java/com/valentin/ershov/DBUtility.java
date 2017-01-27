@@ -16,21 +16,21 @@ public class DBUtility {
     private static Connection connection = null;
 
     public static Connection getConnection() {
-//        String url = "jdbc:postgresql://127.0.0.1:5432/test";
-        String url = "jdbc:mysql://localhost:3306/testrt";
+        String url = "jdbc:postgresql://127.0.0.1:5432/test_rt";
+//        String url = "jdbc:mysql://localhost:3306/testrt";
         //Имя пользователя БД
-        String name = "root";
-//        String name = "postgres";
+//        String name = "root";
+        String name = "postgres";
         //Пароль
-        String password = "root";
-//        String password = "postgres";
+//        String password = "root";
+        String password = "postgres";
         if (connection != null) {
             return connection;
         } else {
             try {
-                Class.forName("com.mysql.jdbc.Driver");
+//                Class.forName("com.mysql.jdbc.Driver");
+                Class.forName("org.postgresql.Driver");
                 connection = DriverManager.getConnection(url, name, password);
-
             } catch (Exception e) {
                 LOG.info("Error create connection to db");
             }

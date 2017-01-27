@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Set;
 
 /**
  * Created by Valek on 27.01.2017.
@@ -34,9 +35,6 @@ public class UserServlet extends HttpServlet {
 //            lastName = "Guest";
 //        }
         User user = getUser(lastName, firstName, middleName, city);
-        if (user != null) {
-
-        }
 
         String greetings = "Hello " + user.getLastName() + " " + user.getFirstName() + " " + user.getMiddleName() + " " + user.getCity();
 
@@ -46,11 +44,20 @@ public class UserServlet extends HttpServlet {
 
     private User getUser(String lastName, String firstName, String middleName, String city) {
         User user = new User();
-        String sql = "SELECT * FROM users WHERE last_name LIKE ? AND first_name LIKE ? AND middle_name LIKE ? " +
-                "AND city LIKE ?";
+        String sql = "SELECT * FROM users WHERE last_name LIKE CASE WHEN ? = '' THEN '%' ELSE ? END" +
+                " AND first_name LIKE CASE WHEN ? = '' THEN '%' ELSE ? END" +
+                " AND middle_name LIKE CASE WHEN ? = '' THEN '%' ELSE ? END" +
+                " AND city LIKE CASE WHEN ? = '' THEN '%' ELSE ? END";
         try {
             PreparedStatement stmt = DBUtility.getConnection().prepareStatement(sql);
             stmt.setString(1, lastName);
+            stmt.setString(2, lastName);
+            stmt.setString(3, firstName);
+            stmt.setString(4, firstName);
+            stmt.setString(5, middleName);
+            stmt.setString(6, middleName);
+            stmt.setString(7, city);
+            stmt.setString(8, city);
             ResultSet resultSet = stmt.executeQuery();
             while (resultSet.next()) {
                 user.setLastName(resultSet.getString("last_name"));
@@ -62,6 +69,9 @@ public class UserServlet extends HttpServlet {
             LOG.info("Exception when get user");
         }
         return user;
+    }
 
+    private Set<Car> getCars(Integer userId) {
+        return null;
     }
 }

@@ -1,5 +1,8 @@
 package com.valentin.ershov;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by Valek on 27.01.2017.
  */
@@ -9,6 +12,7 @@ public class User {
     private String firstName;
     private String middleName;
     private String city;
+    private Set<Car> cars = new HashSet<>();
 
     public Integer getId() {
         return id;
@@ -48,5 +52,13 @@ public class User {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public Set<Car> getCars() {
+        return cars;
+    }
+
+    public void setCars(Set<Car> cars) {
+        this.cars = cars;
     }
 }
