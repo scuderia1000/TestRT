@@ -10,11 +10,14 @@
 // });
 
 $(document).ready(function() {
-    $('#userName').blur(function() {
+    $('#search').click(function() {
         $.ajax({
             url : 'getUserServlet',
             data : {
-                userName : $('#userName').val()
+                lastName : $('#lastName').val(),
+                firstName : $('#firstName').val(),
+                middleName : $('#middleName').val(),
+                city : $('#city').val()
             },
             success : function(responseText) {
                 $('#ajaxGetUserServletResponse').text(responseText);

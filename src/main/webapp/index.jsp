@@ -9,8 +9,11 @@
 </head>
 <body>
     <form>
-        Enter Name: <input type="text" id="userName" />
-        <input id="myButton" type="button" value="Submit" />
+        Enter Last Name: <input type="text" id="lastName" />
+        Enter First Name: <input type="text" id="firstName" />
+        Enter Middle Name: <input type="text" id="middleName" />
+        Enter City: <input type="text" id="city" />
+        <input id="search" type="button" value="Search" />
     </form>
     <br>
     <br>
