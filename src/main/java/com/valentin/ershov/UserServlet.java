@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -65,6 +66,18 @@ public class UserServlet extends HttpServlet {
                 user.setMiddleName(resultSet.getString("middle_name"));
                 user.setCity(resultSet.getString("city"));
             }
+            sql = "SELECT * FROM user_cars WHERE user_id = ?";
+            stmt = DBUtility.getConnection().prepareStatement(sql);
+            stmt.setInt(1, user.getId());
+            resultSet = stmt.executeQuery();
+            Set<Car> cars = new HashSet<>();
+            while (resultSet.next()) {
+                Car car = new Car();
+                car.setUserId(resultSet.getInt("user_id"));
+                car.setModel(resultSet.getString("model"));
+                cars.add(car);
+            }
+            user.setCars(cars);
         } catch (Exception e) {
             LOG.info("Exception when get user");
         }
