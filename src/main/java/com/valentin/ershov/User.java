@@ -12,7 +12,7 @@ public class User {
     private String firstName;
     private String middleName;
     private String city;
-    private Set<Car> cars = new HashSet<>();
+    private Set<String> carModels = new HashSet<>();
 
     public Integer getId() {
         return id;
@@ -54,11 +54,15 @@ public class User {
         this.city = city;
     }
 
-    public Set<Car> getCars() {
-        return cars;
+    public void setCarModel(String model) {
+        carModels.add(model);
     }
 
-    public void setCars(Set<Car> cars) {
-        this.cars = cars;
+    public Set<String> getCarModels() {
+        return carModels;
+    }
+
+    public void setCarModels(Set<String> carModels) {
+        this.carModels = carModels;
     }
 }

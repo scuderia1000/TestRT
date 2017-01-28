@@ -1,5 +1,6 @@
 package com.valentin.ershov;
 
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,10 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.HashSet;
-import java.util.Set;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * Created by Valek on 27.01.2017.
@@ -31,26 +33,26 @@ public class UserServlet extends HttpServlet {
         String firstName = request.getParameter("firstName").trim();
         String middleName = request.getParameter("middleName").trim();
         String city = request.getParameter("city").trim();
-//        lastName = URLDecoder.decode(lastName, "UTF-8");
-//        if (lastName == null || "".equals(lastName)) {
-//            lastName = "Guest";
-//        }
-        User user = getUser(lastName, firstName, middleName, city);
-
-        String greetings = "Hello " + user.getLastName() + " " + user.getFirstName() + " " + user.getMiddleName() + " " + user.getCity();
-
-        response.setContentType("text/plain;charset=UTF-8");
-        response.getWriter().write(greetings);
+        String car = request.getParameter("car").trim();
+        String json = new Gson().toJson(getUsers(lastName, firstName, middleName, city, car));
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(json);
     }
 
-    private User getUser(String lastName, String firstName, String middleName, String city) {
-        User user = new User();
-        String sql = "SELECT * FROM users WHERE last_name LIKE CASE WHEN ? = '' THEN '%' ELSE ? END" +
-                " AND first_name LIKE CASE WHEN ? = '' THEN '%' ELSE ? END" +
-                " AND middle_name LIKE CASE WHEN ? = '' THEN '%' ELSE ? END" +
-                " AND city LIKE CASE WHEN ? = '' THEN '%' ELSE ? END";
+    private Map<Integer, User> getUsers(String lastName, String firstName, String middleName, String city, String userCarModel) {
+        User user = null;
+        Map<Integer, User> users = new HashMap<>();
+        Connection connection = null;
+        String sql = "SELECT DISTINCT t1.id, last_name, first_name, middle_name, city, car.model FROM users t1, user_cars car" +
+                " WHERE LOWER(last_name) LIKE CASE WHEN ? = '' THEN '%' ELSE LOWER(?) END" +
+                " AND LOWER(first_name) LIKE CASE WHEN ? = '' THEN '%' ELSE LOWER(?) END" +
+                " AND LOWER(middle_name) LIKE CASE WHEN ? = '' THEN '%' ELSE LOWER(?) END" +
+                " AND LOWER(city) LIKE CASE WHEN ? = '' THEN '%' ELSE LOWER(?) END" +
+                " AND LOWER(car.model) LIKE CASE WHEN ? = '' THEN '%' ELSE LOWER(?) END";
         try {
-            PreparedStatement stmt = DBUtility.getConnection().prepareStatement(sql);
+            connection = DBUtility.getConnection();
+            PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, lastName);
             stmt.setString(2, lastName);
             stmt.setString(3, firstName);
@@ -59,32 +61,35 @@ public class UserServlet extends HttpServlet {
             stmt.setString(6, middleName);
             stmt.setString(7, city);
             stmt.setString(8, city);
+            stmt.setString(9, userCarModel);
+            stmt.setString(10, userCarModel);
+
             ResultSet resultSet = stmt.executeQuery();
+            LOG.info("Data received");
             while (resultSet.next()) {
-                user.setLastName(resultSet.getString("last_name"));
-                user.setFirstName(resultSet.getString("first_name"));
-                user.setMiddleName(resultSet.getString("middle_name"));
-                user.setCity(resultSet.getString("city"));
+                if (users.containsKey(resultSet.getInt("id"))) {
+                    users.get(resultSet.getInt("id")).setCarModel(resultSet.getString("model"));
+                } else {
+                    user = new User();
+                    user.setId(resultSet.getInt("id"));
+                    user.setLastName(resultSet.getString("last_name"));
+                    user.setFirstName(resultSet.getString("first_name"));
+                    user.setMiddleName(resultSet.getString("middle_name"));
+                    user.setCity(resultSet.getString("city"));
+                    user.setCarModel(resultSet.getString("model"));
+                    users.put(user.getId(), user);
+                }
             }
-            sql = "SELECT * FROM user_cars WHERE user_id = ?";
-            stmt = DBUtility.getConnection().prepareStatement(sql);
-            stmt.setInt(1, user.getId());
-            resultSet = stmt.executeQuery();
-            Set<Car> cars = new HashSet<>();
-            while (resultSet.next()) {
-                Car car = new Car();
-                car.setUserId(resultSet.getInt("user_id"));
-                car.setModel(resultSet.getString("model"));
-                cars.add(car);
-            }
-            user.setCars(cars);
         } catch (Exception e) {
             LOG.info("Exception when get user");
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException ex) {
+
+            }
         }
-        return user;
+        return users;
     }
 
-    private Set<Car> getCars(Integer userId) {
-        return null;
-    }
 }
