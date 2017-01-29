@@ -10,11 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URLDecoder;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -49,7 +47,8 @@ public class UserServlet extends HttpServlet {
                 " AND LOWER(first_name) LIKE CASE WHEN ? = '' THEN '%' ELSE LOWER(?) END" +
                 " AND LOWER(middle_name) LIKE CASE WHEN ? = '' THEN '%' ELSE LOWER(?) END" +
                 " AND LOWER(city) LIKE CASE WHEN ? = '' THEN '%' ELSE LOWER(?) END" +
-                " AND LOWER(car.model) LIKE CASE WHEN ? = '' THEN '%' ELSE LOWER(?) END";
+                " AND LOWER(car.model) LIKE CASE WHEN ? = '' THEN '%' ELSE LOWER(?) END" +
+                " AND car.user_id = t1.id";
         try {
             connection = DBUtility.getConnection();
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -82,12 +81,6 @@ public class UserServlet extends HttpServlet {
             }
         } catch (Exception e) {
             LOG.info("Exception when get user");
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException ex) {
-
-            }
         }
         return users;
     }

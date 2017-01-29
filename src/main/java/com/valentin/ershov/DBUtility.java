@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 
 /**
  * Created by Valek on 27.01.2017.
@@ -16,7 +15,7 @@ public class DBUtility {
     private static Connection connection = null;
 
     public static Connection getConnection() {
-        String url = "jdbc:postgresql://127.0.0.1:5432/test_rt";
+        String url = "jdbc:postgresql://127.0.0.1:5432/testrt";
         String name = "postgres";
         String password = "postgres";
         if (connection != null) {

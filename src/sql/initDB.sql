@@ -1,7 +1,9 @@
 DROP TABLE IF EXISTS users;
--- Создание счетчика
+
+DROP SEQUENCE IF EXISTS auto_id_users;
+
 CREATE SEQUENCE auto_id_users;
--- Создание таблицы
+
 CREATE TABLE users
 (
   "id" integer NOT NULL DEFAULT nextval('auto_id_users'),

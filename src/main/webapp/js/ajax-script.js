@@ -8,7 +8,6 @@ $(document).ready(function () {
         if ((lastName == null || lastName == "") && (firstName == null || firstName == "")
             && (middleName == null || middleName == "") && (city == null || city == "")
             && (car == null || car == "")) {
-            // $('#alert').text("Пожалуйста, заполните хотя бы одно поле!");
             alert("Пожалуйста, заполните хотя бы одно поле!");
             return false;
         }

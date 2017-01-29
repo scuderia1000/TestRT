@@ -15,7 +15,6 @@
 <body>
 <div class="container">
     <h3>Введите данные для поиска пользователя</h3>
-    <div id="alert"></div>
     <form class="form-inline">
         <div class="form-group" id="usersSearch">
             <input type="text" id="lastName" class="form-control" placeholder="Фамилия"/>
@@ -29,7 +28,6 @@
 </div>
 <br>
 <br>
-
 <div class="container">
     <h3>Результат поиска</h3>
     <form class="form-horizontal">
