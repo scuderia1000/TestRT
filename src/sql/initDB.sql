@@ -1,3 +1,5 @@
+CREATE DATABASE testrt;
+
 DROP TABLE IF EXISTS users;
 
 DROP SEQUENCE IF EXISTS auto_id_users;
@@ -12,6 +14,10 @@ CREATE TABLE users
   "middle_name" varchar(255) NOT NULL,
   "city" varchar(255) NOT NULL
 );
+
+DROP TABLE IF EXISTS user_cars;
+
+DROP SEQUENCE IF EXISTS auto_id_user_cars;
 
 CREATE SEQUENCE auto_id_user_cars;
 
